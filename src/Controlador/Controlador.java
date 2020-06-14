@@ -39,7 +39,6 @@ public class Controlador {
 
 
     class Buscar implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
             ve = new ViajesEncontrados();
@@ -48,6 +47,9 @@ public class Controlador {
             ve.conectarControladorVolver(btnVolver);
             ComprarBoletos cv = new ComprarBoletos();
             ve.conectarControladorElegir(cv);
+            Tabla tabla= new Tabla();
+            ve.conectarControladorTabla(tabla);
+            cv.setT(tabla);
         }
     }
 
@@ -61,7 +63,6 @@ public class Controlador {
             VolverBusqueda btnVolver = new VolverBusqueda();
             busqueda.conectarControladorVolver(btnVolver);
             busqueda.conectarControlador(btnBuscar);
-
         }
     }
     class Login implements ActionListener{
@@ -73,10 +74,17 @@ public class Controlador {
     }
 
     class ComprarBoletos implements ActionListener{
+        Tabla t;
+
+        public void setT(Tabla t) {
+            this.t = t;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            //int totalAs = c.obtenerNumAsientos();
-            vb = new ViajeSeleccionado();
+            t.getViaje();
+            int totalAs = c.obtenerNumAsientos(t.getViaje());
+            vb = new ViajeSeleccionado(totalAs,c.obtenerAsientosOc(t.getViaje()));
             CerrarBoletos btnVolver=new CerrarBoletos();
             vb.conectarComprar(btnVolver);
         }
@@ -131,9 +139,12 @@ public class Controlador {
             mon.central.updateUI();
         }
     }
-    class tabla implements MouseListener
-    {
+    class Tabla implements MouseListener {
         Viaje viaje = null;
+
+        public Viaje getViaje() {
+            return viaje;
+        }
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -149,6 +160,7 @@ public class Controlador {
                 if (c2 != null){
                     viaje=c2;
                 }
+                System.out.println(c2.toString());
             }
         }
 

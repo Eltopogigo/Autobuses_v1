@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -124,4 +125,5 @@ public class ViajesEncontrados extends JFrame{
         volver.addActionListener(ac);
     }
     public void conectarControladorElegir(ActionListener ac){elegir.addActionListener(ac);}
+    public void conectarControladorTabla(MouseListener ac){tabla.addMouseListener(ac);}
 }

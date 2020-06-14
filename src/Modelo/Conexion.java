@@ -259,7 +259,7 @@ public class Conexion {
     {
         PreparedStatement ps;
         ResultSet rs;
-        String consultaSQL = "select * from scAutobuses.viaje where  idviaje ="+v.getIdViaje()+" );";
+        String consultaSQL = "select * from scAutobuses.viaje where  idviaje ="+v.getIdViaje()+" ;";
         Viaje viaje = null;
         try {
             ps  = conexion.prepareStatement(consultaSQL);
@@ -280,5 +280,26 @@ public class Conexion {
             ex.getStackTrace();
         }
         return viaje;
+    }
+
+    public void insertarBoleto(Boleto b){
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "insert into boleto values ("+b.getNoAsiento()+","+b.getPrecio()+","+b.getIdPasajero()+","+b.getIdViaje()+");";
+        Boleto bol = null;
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+            bol = new Boleto();
+            if (rs.next()){
+                bol.setNoAsiento(rs.getInt("numasiento"));
+                bol.setPrecio(rs.getDouble("precio"));
+                bol.setIdPasajero(rs.getInt("idPasajero"));
+                bol.setIdViaje(rs.getInt("idViaje"));
+            }
+        }catch (SQLException ex)
+        {
+            ex.getStackTrace();
+        }
     }
 }

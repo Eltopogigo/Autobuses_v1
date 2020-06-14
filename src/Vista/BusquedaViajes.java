@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -134,6 +135,7 @@ public class BusquedaViajes extends JFrame {
     public void conectarControladorVolver(ActionListener ac){
         volver.addActionListener(ac);
     }
+
 
     public String getOrigen(){
         return origen.getSelectedItem().toString();

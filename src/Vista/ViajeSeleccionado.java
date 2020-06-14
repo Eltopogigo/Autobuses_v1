@@ -2,6 +2,8 @@
 package Vista;
 
 import Modelo.Boleto;
+import Modelo.Conexion;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -10,17 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ButtonGroup;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  *
@@ -38,21 +33,29 @@ public class ViajeSeleccionado extends JFrame{
     private JTextField txtApellidoM;
     private JRadioButton adulto;
     private JRadioButton niño;
-    private JRadioButton inapam;
+    private JRadioButton inapam,estudiante;
     private ButtonGroup grupoTipo = new ButtonGroup();
-    private JButton comprar;
-    JLabel[] asientos = new JLabel[20];
-    Boleto[] boletos = new Boleto[20];
-    
-    
-    public ViajeSeleccionado(){
+    private JButton comprar, agregar;
+    JLabel[] asientos;
+    Boleto[] boletos;
+    ArrayList<Integer> asientosOc;
+    ImageIcon imAsientoNo;
+    Icon icAsientoNo;
+
+    public ViajeSeleccionado(int asientosT, ArrayList<Integer> asientosOcupados){
         setBounds(100, 100, 500, 550);//Dimensiones del frame
         setTitle("Viajes Encontrados");    //Barra de título del frame
         setDefaultCloseOperation(EXIT_ON_CLOSE);    //Acción al pulsar salir
         setVisible(true);
         setLayout(null); //null para usar distribucion absoluta
         setResizable(false);
-        
+
+
+        int asientosTotales= asientosT;
+        asientos= new JLabel[asientosTotales];
+        boletos= new Boleto[asientosTotales];
+        asientosOc=asientosOcupados;
+
         Font fuente = new Font("Arial", Font.PLAIN, 12);
         
         lTitulo = new JLabel("Compra de Boletos");
@@ -96,34 +99,48 @@ public class ViajeSeleccionado extends JFrame{
         lTipo.setBounds(20, 120, 90, 20);
         lTipo.setFont(new Font("Arial",Font.BOLD,12));
         
-        adulto = new JRadioButton("Adulto");
+        adulto = new JRadioButton("Normal");
         adulto.setFont(fuente);
-        niño = new JRadioButton("Niño");
+        niño = new JRadioButton("Menor a 12 años");
         niño.setFont(fuente);
-        inapam = new JRadioButton("INAPAM");
+        inapam = new JRadioButton("Adulto Mayor");
+        inapam.setFont(fuente);
+        estudiante = new JRadioButton("Estudiante");
         inapam.setFont(fuente);
         
         grupoTipo.add(adulto);
         grupoTipo.add(niño);
         grupoTipo.add(inapam);
+        grupoTipo.add(estudiante);
+
+        agregar = new JButton("Agregar");
+        add(agregar);
+        agregar.setBounds(170, 450, 150, 30);
         
         JPanel panelTipo = new JPanel(new GridLayout(0, 1));
         panelTipo.add(adulto);
         panelTipo.add(niño);
         panelTipo.add(inapam);
+        panelTipo.add(estudiante);
+        panelTipo.add(agregar);
         add(panelTipo);
         panelTipo.setBounds(20, 150, 100, 100);
         
         ImageIcon imAsiento =new ImageIcon("src/Imagenes/AsientoDis.png");
-        Icon icAsiento = new ImageIcon(imAsiento.getImage().getScaledInstance(40,40,Image.SCALE_DEFAULT));
+        Icon icAsiento = new ImageIcon(imAsiento.getImage().getScaledInstance(20,20,Image.SCALE_DEFAULT));
+
+        imAsientoNo =new ImageIcon("src/Imagenes/Asientono.png");
+        icAsientoNo = new ImageIcon(imAsientoNo.getImage().getScaledInstance(20,20,Image.SCALE_DEFAULT));
         
         JPanel panelAsientosIzq = new JPanel();
         panelAsientosIzq.setLayout(new GridLayout(0,2));
         
         selecionAsientos selector = new selecionAsientos();
-        
-        for (int i = 0; i <asientos.length/2; i++) {
-            asientos[i]= new JLabel(icAsiento);
+
+        for (int i = 0; i <asientos.length/2+1; i++) {
+            if(asientosOcupados.contains((Integer)i)){
+                asientos[i]= new JLabel(icAsientoNo);
+            }else{ asientos[i]= new JLabel(icAsiento);}
             if(i<9) asientos[i].setText("0"+(i+1));
             else    asientos[i].setText(""+ (i+1));
             asientos[i].addMouseListener(selector);
@@ -137,8 +154,10 @@ public class ViajeSeleccionado extends JFrame{
         setBackground(Color.white);
         panelAsientosDer.setLayout(new GridLayout(0,2));
         
-        for (int i = asientos.length/2; i <asientos.length; i++) {
-            asientos[i]= new JLabel(icAsiento);
+        for (int i = asientos.length/2+1; i <asientos.length; i++) {
+            if(asientosOcupados.contains((Integer)i)){
+                asientos[i]= new JLabel(icAsientoNo);
+            }else{ asientos[i]= new JLabel(icAsiento);}
             asientos[i].setText(""+(i+1));
             asientos[i].addMouseListener(selector);
             panelAsientosDer.add(asientos[i]);  
@@ -160,7 +179,9 @@ public class ViajeSeleccionado extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    this.finalize();
+                    if(JOptionPane.showConfirmDialog(null,"Confirmar Venta","Confirmación",JOptionPane.OK_OPTION)==0){
+
+                    }
                 } catch (Throwable ex) {
                     Logger.getLogger(ViajeSeleccionado.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -177,12 +198,23 @@ public class ViajeSeleccionado extends JFrame{
         @Override
         public void mouseClicked(MouseEvent e) {
             JLabel bo = (JLabel)e.getSource();
-            for (int nb = 0; nb<asientos.length; nb++) {
-                ImageIcon imAsiento = new ImageIcon("src/Imagenes/AsientoSel.png");
-                Icon icAsiento = new ImageIcon(imAsiento.getImage().getScaledInstance(40,40,Image.SCALE_DEFAULT));
-                bo.setIcon(icAsiento);
+            if(bo.getIcon().equals(icAsientoNo)){
+
+            }else {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    for (int nb = 0; nb < asientos.length; nb++) {
+                        ImageIcon imAsiento = new ImageIcon("src/Imagenes/AsientoDis.png");
+                        Icon icAsiento = new ImageIcon(imAsiento.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+                        bo.setIcon(icAsiento);
+                    }
+                } else {
+                    for (int nb = 0; nb < asientos.length; nb++) {
+                        ImageIcon imAsiento = new ImageIcon("src/Imagenes/AsientoSel.png");
+                        Icon icAsiento = new ImageIcon(imAsiento.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+                        bo.setIcon(icAsiento);
+                    }
+                }
             }
-            
         }
         @Override
         public void mousePressed(MouseEvent e) {}

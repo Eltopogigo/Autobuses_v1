@@ -1,4 +1,4 @@
-package ClasesBD;
+package Modelo;
 
 public class Boleto {
     private int idBoleto;

@@ -59,11 +59,11 @@ public class VistaPrincipal extends JFrame{
         sp.putConstraint(SpringLayout.NORTH, titulo, 100, SpringLayout.NORTH, contenedor);
         sp.putConstraint(SpringLayout.WEST,titulo,  70, SpringLayout.WEST, contenedor);
 
-        JLabel titulo2 = new JLabel("a QUChao2.0");
+        /*JLabel titulo2 = new JLabel("a QUChao2.0");
         contenedor.add(titulo2);
         titulo2.setFont(fuente);
         sp.putConstraint(SpringLayout.NORTH, titulo2, 190, SpringLayout.NORTH, contenedor);
-        sp.putConstraint(SpringLayout.WEST,titulo2,  100, SpringLayout.WEST, contenedor);
+        sp.putConstraint(SpringLayout.WEST,titulo2,  100, SpringLayout.WEST, contenedor);*/
 
         JLabel imagen = new JLabel();
         Thread i=new Thread(new SlideShow(imagen));
@@ -97,15 +97,23 @@ public class VistaPrincipal extends JFrame{
         sp.putConstraint(SpringLayout.NORTH, tarifa, 295, SpringLayout.NORTH, contenedor);
         sp.putConstraint(SpringLayout.WEST,tarifa,  50, SpringLayout.WEST, contenedor);
 
-        /*ImageIcon logo2=new ImageIcon("src/Imagenes/logo.png");
+        ImageIcon logo2=new ImageIcon("src/Imagenes/logo.png");
         Icon logopr2= new ImageIcon(logo2.getImage().getScaledInstance(550,200,Image.SCALE_DEFAULT));
         JLabel logo =new JLabel ();
         logo.setIcon(logopr2);
         contenedor.add(logo);
         sp.putConstraint(SpringLayout.NORTH, logo, 150, SpringLayout.NORTH, contenedor);
-        sp.putConstraint(SpringLayout.WEST,logo,  50, SpringLayout.WEST, contenedor);*/
+        sp.putConstraint(SpringLayout.WEST,logo,  50, SpringLayout.WEST, contenedor);
 
         Font fuente2 = new Font("Rockwell",1,25);
+
+        registrar =new JButton("         Registarse         ");
+        contenedor.add(registrar);
+        registrar.setBackground(Color.BLACK);
+        registrar.setForeground(Color.white);
+        registrar.setFont(fuente2);
+        sp.putConstraint(SpringLayout.NORTH, registrar, 140, SpringLayout.NORTH, contenedor);
+        sp.putConstraint(SpringLayout.WEST,registrar,  660, SpringLayout.WEST, contenedor);
 
         comprarBoleto =new JButton("  Monitoreo de Viajes   ");
         contenedor.add(comprarBoleto);
@@ -127,6 +135,10 @@ public class VistaPrincipal extends JFrame{
         this.setVisible(true);
     }
 
+    public void conectarControladorRegistar(ActionListener ac){
+        registrar.addActionListener(ac);
+    }
+
     public void conectarControladorBusquedaViajes(ActionListener ac){
         buscarViaje.addActionListener(ac);
     }
@@ -134,4 +146,6 @@ public class VistaPrincipal extends JFrame{
     public void conectarControladorMonitoreoViajes(ActionListener ac){
         comprarBoleto.addActionListener(ac);
     }
+
+
 }

@@ -4,13 +4,13 @@ import Modelo.Viaje;
 import Modelo.Conexion;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JPanel;
-import Vista.BusquedaViajes;
-import Vista.VentanaMonitoreo;
-import Vista.ViajesEncontrados;
-import Vista.VistaPrincipal;
+
+import Vista.*;
 
 /**
  *
@@ -22,6 +22,8 @@ public class Controlador {
     ViajesEncontrados ve;
     VistaPrincipal vp;
     Conexion c;
+    ViajeSeleccionado vb;
+    EmpleadoLogin vemp;
 
     public Controlador(VistaPrincipal vp, Conexion conexion) {
         this.vp = vp;
@@ -31,6 +33,8 @@ public class Controlador {
         vp.conectarControladorBusquedaViajes(btnBuscarViajes);
         MonitoreoViajes btnMonViajes = new MonitoreoViajes();
         vp.conectarControladorMonitoreoViajes(btnMonViajes);
+        Login l = new Login();
+        vp.conectarControladorRegistar(l);
     }
 
 
@@ -42,6 +46,8 @@ public class Controlador {
             cargarTabla();
             VolverResultadosBusqueda btnVolver = new VolverResultadosBusqueda();
             ve.conectarControladorVolver(btnVolver);
+            ComprarBoletos cv = new ComprarBoletos();
+            ve.conectarControladorElegir(cv);
         }
     }
 
@@ -56,6 +62,30 @@ public class Controlador {
             busqueda.conectarControladorVolver(btnVolver);
             busqueda.conectarControlador(btnBuscar);
 
+        }
+    }
+    class Login implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            vemp = new EmpleadoLogin();
+        }
+    }
+
+    class ComprarBoletos implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //int totalAs = c.obtenerNumAsientos();
+            vb = new ViajeSeleccionado();
+            CerrarBoletos btnVolver=new CerrarBoletos();
+            vb.conectarComprar(btnVolver);
+        }
+    }
+
+    class CerrarBoletos implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            vb.dispose();
         }
     }
 
@@ -94,12 +124,52 @@ public class Controlador {
 
         }
     }
-
     class restablecerMonitoreo implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
             mon.central.removeAll();
             mon.central.updateUI();
+        }
+    }
+    class tabla implements MouseListener
+    {
+        Viaje viaje = null;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            //Recoger qué fila se ha pulsadao en la tabla
+            int filaPulsada = ve.tabla.getSelectedRow();
+            //Si se ha pulsado una fila
+            if(filaPulsada>=0){
+                //Se recoge el id de la fila marcada
+                Viaje v = new Viaje();
+                int id=  (Integer) ve.dtm.getValueAt(filaPulsada, 0);
+                v.setIdViaje(id);
+                Viaje c2 = (c.selectViaje(v));
+                if (c2 != null){
+                    viaje=c2;
+                }
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
         }
     }
 

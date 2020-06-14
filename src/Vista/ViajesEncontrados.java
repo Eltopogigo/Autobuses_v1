@@ -115,8 +115,13 @@ public class ViajesEncontrados extends JFrame{
 
         this.setVisible(true);
     }
+
+    public JTable getTabla() {
+        return tabla;
+    }
+
     public void conectarControladorVolver(ActionListener ac){
         volver.addActionListener(ac);
     }
-
+    public void conectarControladorElegir(ActionListener ac){elegir.addActionListener(ac);}
 }

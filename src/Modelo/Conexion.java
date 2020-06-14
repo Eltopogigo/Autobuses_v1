@@ -215,4 +215,70 @@ public class Conexion {
         }
         return c;
     }
+
+    public int obtenerNumAsientos(Viaje v)
+    {
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "select numasientos from scAutobuses.autobus where  idautobus='"+v.getIdAutobus()+"';";
+        int numAs = 0;
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+            if(rs.next()){
+                numAs = rs.getInt("numasientos");
+            }
+        }catch (SQLException ex)
+        {
+            ex.getStackTrace();
+        }
+        return numAs;
+    }
+
+    public ArrayList<Integer> obtenerAsientosOc(Viaje v)
+    {
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "select noasiento from scAutobuses.boleto where  idboleto in (select idboleto from scAutobuses.viaje where idviaje ="+v.getIdViaje()+" );";
+        ArrayList<Integer> asientos = null;
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+            asientos = new ArrayList<>();
+            while (rs.next()){
+                asientos.add(rs.getInt("noasiento"));
+            }
+        }catch (SQLException ex)
+        {
+            ex.getStackTrace();
+        }
+        return asientos;
+    }
+
+    public Viaje selectViaje(Viaje v)
+    {
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "select * from scAutobuses.viaje where  idviaje ="+v.getIdViaje()+" );";
+        Viaje viaje = null;
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+            viaje = new Viaje();
+            if (rs.next()){
+                viaje.setIdViaje(rs.getInt("idviaje"));
+                viaje.setHoraSalida(rs.getString("horasalida"));
+                viaje.setFechaSalida(rs.getString("fechasalida"));
+                viaje.setIdTerminalSalida(rs.getInt("idterminalsalida"));
+                viaje.setGetIdTerminalLlegada(rs.getInt("idterminalllegada"));
+                viaje.setHorasDuracion(rs.getInt("horasduracion"));
+                viaje.setIdAutobus(rs.getInt("idautobus"));
+                viaje.setIdEmpleado(rs.getInt("idempleado"));
+            }
+        }catch (SQLException ex)
+        {
+            ex.getStackTrace();
+        }
+        return viaje;
+    }
 }

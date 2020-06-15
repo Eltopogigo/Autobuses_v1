@@ -30,7 +30,7 @@ public class Controlador {
     VistaPrincipal vp;
     Conexion c;
     ViajeSeleccionado vb;
-    EmpleadoLogin vemp;
+    VistaVentas vemp;
 
 
     public Controlador(VistaPrincipal vp, Conexion conexion) {
@@ -41,8 +41,8 @@ public class Controlador {
         vp.conectarControladorBusquedaViajes(btnBuscarViajes);
         MonitoreoViajes btnMonViajes = new MonitoreoViajes();
         vp.conectarControladorMonitoreoViajes(btnMonViajes);
-        Login l = new Login();
-        vp.conectarControladorRegistar(l);
+        Ventas ven= new Ventas();
+        vp.conectarControladorVenta(ven);
     }
 
 
@@ -73,11 +73,19 @@ public class Controlador {
             busqueda.conectarControlador(btnBuscar);
         }
     }
-    class Login implements ActionListener{
+    class VolverPrincipal implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            vemp = new EmpleadoLogin();
+            vemp.dispose();
+        }
+    }
+    class Ventas implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            vemp = new VistaVentas();
+            vemp.conectarControladorVolver(new VolverPrincipal());
         }
     }
 

@@ -107,7 +107,7 @@ public class VistaPrincipal extends JFrame{
 
         Font fuente2 = new Font("Rockwell",1,25);
 
-        registrar =new JButton("         Registarse         ");
+        registrar =new JButton("           Ventas            ");
         contenedor.add(registrar);
         registrar.setBackground(Color.BLACK);
         registrar.setForeground(Color.white);
@@ -135,8 +135,7 @@ public class VistaPrincipal extends JFrame{
         this.setVisible(true);
     }
 
-    public void conectarControladorRegistar(ActionListener ac){
-        registrar.addActionListener(ac);
+    public void conectarControladorVenta(ActionListener ac){ registrar.addActionListener(ac);
     }
 
     public void conectarControladorBusquedaViajes(ActionListener ac){

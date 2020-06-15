@@ -1,14 +1,17 @@
 package Controlador;
 
+import Modelo.Terminal;
 import Modelo.Viaje;
 import Modelo.Conexion;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Vector;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import Vista.*;
 
@@ -96,6 +99,14 @@ public class Controlador {
             vb.dispose();
         }
     }
+    class VolverMonitoreo implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mon.dispose();
+
+        }
+    }
 
     class MonitoreoViajes implements ActionListener {
 
@@ -104,8 +115,10 @@ public class Controlador {
             cargarEstados();
             MonBuscar mBuscar = new MonBuscar();
             restablecerMonitoreo ResMon = new restablecerMonitoreo();
+            VolverMonitoreo vol = new VolverMonitoreo();
             mon.conectarControladorBuscar(mBuscar);
             mon.concectarControladorRestablecer(ResMon);
+            mon.conectarControladorVolver(vol);
         }
     }
 
@@ -214,15 +227,37 @@ public class Controlador {
         }
     }
 
-    public void cargaranim() {
-        int terminal = c.idTerminal(mon.getDestino());
-        ArrayList<Viaje> vi = c.listViajes(terminal);
-        System.out.println(terminal);
-        for (JPanel pan : mon.panAnim(vi.size())) {
-            mon.central.add(pan);
+    public JLabel datosanim(){
+        int terminal=c.idTerminal(mon.getDestino());
+        JLabel datos= new JLabel();
+        ArrayList<Viaje> vi= c.listViajes(terminal);
+        for(Viaje viaje:vi){
+            ArrayList<Terminal> ter = c.consultaTerminal(terminal);
+            String terminalS= ter.get(0).getNombre();
+            datos=new JLabel("Id del viaje: "+viaje.getIdViaje()+"Terminal de salida: "+terminalS);//+"Termina de llegada: "+viaje.getGetIdTerminalLlegada());
         }
-        for (Viaje via : vi) {
-            System.out.println(via.getHorasDuracion());
+        return datos;
+    }
+    public void cargaranim(){
+        Font fuente = new Font("Tahoma",1,12);
+        int terminal=c.idTerminal(mon.getDestino());
+        ArrayList<Viaje> vi= c.listViajes(terminal);
+        JPanel panelAnimacion[] = mon.panAnim(vi.size());
+        int i=0;
+        for(JPanel pan:panelAnimacion){
+            pan.setBackground(Color.WHITE);
+            ArrayList<Terminal> ter = c.consultaTerminal(vi.get(i).getIdTerminalSalida());
+            ArrayList<Terminal> ter2 = c.consultaTerminal(vi.get(i).getGetIdTerminalLlegada());
+            String terminalS= ter.get(0).getNombre();
+            String terminalL= ter2.get(0).getNombre();
+            String formato= String.format("%-22s %-5d %-22s %-20s %-22s %-10s %-22s %-20s %-22s %-3d","Id del viaje: ",vi.get(i).getIdViaje(),"Terminal de salida: ",
+                    terminalS, "Hora de salida: ", vi.get(i).getHoraSalida(), "Terminal de llegada: ", terminalL ,"Horas de duracion: " , vi.get(i).getHorasDuracion());
+            JLabel datos=new JLabel(formato);
+            datos.setFont(fuente);
+            datos.setBounds(pan.getX()+40,pan.getY()+100,1000,90);
+            pan.add(datos);
+            mon.central.add(pan);
+            i++;
         }
     }
 }

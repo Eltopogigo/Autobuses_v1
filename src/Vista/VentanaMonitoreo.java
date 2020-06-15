@@ -20,11 +20,9 @@ import javax.swing.JTextField;
  * @author antonio
  */
 public class VentanaMonitoreo extends JFrame {
-    public JPanel superior,izquierdo,derecho,central,jp;
+    public JPanel superior,central;
     JTextField cuadrobusqueda;
-    JButton buscar,restablecer;
-    JLabel origen,destino,imag;
-    JProgressBar jPr;
+    JButton buscar,restablecer, volver;
     JComboBox viajes;
 
     public VentanaMonitoreo(){
@@ -32,7 +30,8 @@ public class VentanaMonitoreo extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setVisible(true);
         initComponents();
-        setSize(900,500);
+        setExtendedState(MAXIMIZED_BOTH);
+
     }
 
     public void initComponents(){
@@ -46,37 +45,11 @@ public class VentanaMonitoreo extends JFrame {
         superior.add(buscar);
         restablecer= new JButton("Restablecer");
         superior.add(restablecer);
-
-    /*
-    izquierdo = new JPanel();
-    izquierdo.setLayout(new BoxLayout(izquierdo,BoxLayout.Y_AXIS));
-    origen = new JLabel("Oaxaca");
-    izquierdo.add(origen);
-
-    derecho = new JPanel();
-    derecho.setLayout(new BoxLayout(derecho,BoxLayout.Y_AXIS));
-    destino = new JLabel("Mexico");
-    derecho.add(destino);
-    */
+        volver= new JButton("Volver");
+        superior.add(volver);
         central = new JPanel();
         central.setLayout(new BoxLayout(central,BoxLayout.Y_AXIS));
-        JPanel jp = new JPanel();
-        JPanel jp1 = new JPanel();
-        //jp.setLayout(null);
-        //jp.setBackground(Color.WHITE);
-        //jp1.setLayout(null);
-        //jp1.setBackground(Color.WHITE);
-        //Thread t1 = new Thread(new hilos(jp));
-        //Thread t2 = new Thread(new hilos(jp1));
-        //t1.start();
-        //t2.start();
-
-        //central.add(jp);
-        //central.add(jp1);
-
         add(superior,BorderLayout.NORTH);
-        // add(izquierdo,BorderLayout.EAST);
-        //add(derecho,BorderLayout.WEST);
         add(central,BorderLayout.CENTER);
 
     }
@@ -108,4 +81,5 @@ public class VentanaMonitoreo extends JFrame {
     public void concectarControladorRestablecer(ActionListener ac){
         restablecer.addActionListener(ac);
     }
+    public void conectarControladorVolver(ActionListener ac){ volver.addActionListener(ac); }
 }

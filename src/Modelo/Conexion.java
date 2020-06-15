@@ -132,7 +132,7 @@ public class Conexion {
 
         PreparedStatement ps;
         ResultSet rs;
-        String consultaSQL = "select idviaje,horasalida,horasduracion,idterminalsalida,idterminalllegada from scAutobuses.viaje where idTerminalLlegada="+i+";";
+        String consultaSQL = "select idviaje,horasalida,horasduracion,idterminalsalida,idterminalllegada from scAutobuses.viaje where idTerminalllegada="+i+";";
 
         ArrayList<Viaje> viajes = new ArrayList<Viaje>();
         try {
@@ -158,7 +158,7 @@ public class Conexion {
     public ArrayList<Terminal> consultaTerminal(int i) {
         PreparedStatement ps;
         ResultSet rs;
-        String consultaSQL = "select nombre,estado from scAutobuses.terminal where idterminalllegada =" + i + ";";
+        String consultaSQL = "select nombre,estado from scAutobuses.terminal where idterminal =" + i + ";";
 
         ArrayList<Terminal> terminal = new ArrayList<Terminal>();
         try {

@@ -1,10 +1,7 @@
 package Controlador;
 
 import java.awt.Image;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  *
@@ -19,26 +16,32 @@ public class Hilos implements Runnable {
         panel=pan;
         anim=new JLabel();
         ImageIcon logo =new ImageIcon("src/imagenes/camion.png");
-        Icon camion = new ImageIcon(logo.getImage().getScaledInstance(100,100,Image.SCALE_DEFAULT));
+        Icon camion = new ImageIcon(logo.getImage().getScaledInstance(50,50,Image.SCALE_DEFAULT));
         anim.setIcon(camion);
         panel.add(anim);
     }
 
     public void run() {
-        int rnd = (int) (Math.random()*20 + 1);
+        JProgressBar barra = new JProgressBar();
+        int rnd = (int) (Math.random()*2000+1) +1000;
+        int z=0;
         int x = panel.getLocation().x;
         int y = panel.getLocation().y;
-        anim.setBounds(x, y,200,200);
-        //System.out.println(panel.getWidth());
-        while (x < 700) {
+        anim.setBounds(x,y,200,200);
+        barra.setBounds(250,y,300,20);
+        panel.add(barra);
+        while (x <= 700) {
             anim.setLocation(x,y);
-            //System.out.println(anim.getX() + " " + anim.getY()+ " " + rnd );
+            barra.setValue(z);
+            barra.setString(String.valueOf(z)+"%");
+            barra.setStringPainted(true);
             try {
-                Thread.sleep(100);
+                Thread.sleep(rnd);
             } catch (InterruptedException e) {
-                System.out.println("Aqui esta el pedo");
+                System.out.println(e);
             }
-            x += rnd;
+            x += 10;
+            z = Math.round(x/7);
         }
     }
 }

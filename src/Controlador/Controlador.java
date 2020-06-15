@@ -1,16 +1,20 @@
 package Controlador;
 
-import Modelo.Terminal;
-import Modelo.Viaje;
-import Modelo.Conexion;
+import Modelo.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 import Vista.*;
@@ -27,6 +31,7 @@ public class Controlador {
     Conexion c;
     ViajeSeleccionado vb;
     EmpleadoLogin vemp;
+
 
     public Controlador(VistaPrincipal vp, Conexion conexion) {
         this.vp = vp;
@@ -76,21 +81,106 @@ public class Controlador {
         }
     }
 
-    class ComprarBoletos implements ActionListener{
-        Tabla t;
+    class AgregarPasajero implements ActionListener{
+        ArrayList<Pasajero> pas=null;
+        ArrayList<Boleto> boletos=null;
+        Viaje v;
+        double total=0;
 
-        public void setT(Tabla t) {
-            this.t = t;
+        public void setV(Viaje v) {
+            this.v = v;
+        }
+
+        public ArrayList<Pasajero> getPas() {
+            return pas;
+        }
+
+        public void setPas(ArrayList<Pasajero> pas) {
+            this.pas = pas;
+        }
+
+        public ArrayList<Boleto> getBoletos() {
+            return boletos;
+        }
+
+        public void setBoletos(ArrayList<Boleto> boletos) {
+            this.boletos = boletos;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            t.getViaje();
-            int totalAs = c.obtenerNumAsientos(t.getViaje());
-            vb = new ViajeSeleccionado(totalAs,c.obtenerAsientosOc(t.getViaje()));
-            CerrarBoletos btnVolver=new CerrarBoletos();
-            vb.conectarComprar(btnVolver);
+            String nombre, apP,apM, botonRes=vb.seleccionRadioButton();
+            int edad;
+
+            if(vb.getAgregar()==e.getSource()){
+                nombre=vb.getTxtNombre().getText();
+                apP=vb.getTxtApellidoP().getText();
+                apM=vb.getTxtApellidoM().getText();
+                edad=Integer.parseInt(vb.getEdadTxt().getText());
+                Pasajero p = new Pasajero(nombre,apP,apM,edad,botonRes);
+                pas.add(p);
+                Boleto b= new Boleto(vb.getIndiceAsiento(),vb.calculoPrecio(botonRes),p.getIdPasajero(),v.getIdViaje());
+                boletos.add(b);
+            }
+
         }
+    }
+    class ConfirmarCompra implements ActionListener{
+        ArrayList<Pasajero> pasajeros=null;
+        ArrayList<Boleto>boletos=null;
+        String ticket;
+        public void setPasajeros(ArrayList<Pasajero> pasajeros) {
+            this.pasajeros = pasajeros;
+        }
+
+        public void setBoletos(ArrayList<Boleto> boletos) {
+            this.boletos = boletos;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            try {
+                if(JOptionPane.showConfirmDialog(null,"Confirmar Venta","Confirmación",JOptionPane.OK_OPTION)==0){
+                    for(int i=0; i<pasajeros.size(); i++) {
+                        c.insertarPasajero(pasajeros.get(i));
+                        Pasajero p = pasajeros.get(i);
+                        c.insertarBoleto(boletos.get(i));
+                        Boleto b = boletos.get(i);
+                        String aux = "" + p.getNombre() + p.getApellido1();
+                        Viaje v = new Viaje();
+                        v.setIdViaje(b.getIdViaje());
+                        Viaje v2 = c.selectViaje(v);
+                        String bol = String.format("%-Folio: 8d \n%-Asiento: 3d \n%-Precio:  6f \n%-Pasajero: 30s \n%-Origen:  15s \n%-Destino:  15s",
+                                b.getIdBoleto(), b.getNoAsiento(), aux, c.consultaNombreTerminal(v2.getIdTerminalSalida()), c.consultaNombreTerminal(v.getGetIdTerminalLlegada()));
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(
+                                new FileOutputStream("recibo.txt"), "utf-8"));
+                            writer.write(bol);
+                    }
+                }
+            } catch (Throwable ex) {
+                Logger.getLogger(ViajeSeleccionado.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    class ComprarBoletos implements ActionListener{
+        Tabla t;
+        Viaje v;
+        public void setT(Tabla t) {
+            this.t = t;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            v= t.getViaje();
+            int totalAs = c.obtenerNumAsientos(v);
+            vb = new ViajeSeleccionado(totalAs,c.obtenerAsientosOc(v));
+            AgregarPasajero ap= new AgregarPasajero();
+            ap.setV(v);
+            vb.conectarAgregar(ap);
+            ConfirmarCompra cc= new ConfirmarCompra();
+            cc.setPasajeros(ap.getPas());
+            cc.setBoletos(ap.getBoletos());
+            vb.conectarComprar(cc);
+        }
+
     }
 
     class CerrarBoletos implements ActionListener{
@@ -259,5 +349,6 @@ public class Controlador {
             mon.central.add(pan);
             i++;
         }
+
     }
 }

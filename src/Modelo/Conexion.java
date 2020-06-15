@@ -197,6 +197,23 @@ public class Conexion {
         }
         return terminal;
     }
+    public String consultaNombreTerminal(int i) {
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "select nombre from scAutobuses.terminal where idterminal="+i+";";
+        String c="";
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+            while(rs.next()){
+                c = new String();
+                c=rs.getString("nombre");
+            }
+        } catch (SQLException e) {
+            System.err.println("* " + e);
+        }
+        return c;
+    }
     public Integer idTerminal(String o) {
         int c=0;
         PreparedStatement ps;
@@ -285,7 +302,7 @@ public class Conexion {
     public void insertarBoleto(Boleto b){
         PreparedStatement ps;
         ResultSet rs;
-        String consultaSQL = "insert into boleto values ("+b.getNoAsiento()+","+b.getPrecio()+","+b.getIdPasajero()+","+b.getIdViaje()+");";
+        String consultaSQL = "insert into scAutobuses.boleto values ("+b.getNoAsiento()+","+b.getPrecio()+","+b.getIdPasajero()+","+b.getIdViaje()+");";
         Boleto bol = null;
         try {
             ps  = conexion.prepareStatement(consultaSQL);
@@ -296,6 +313,27 @@ public class Conexion {
                 bol.setPrecio(rs.getDouble("precio"));
                 bol.setIdPasajero(rs.getInt("idPasajero"));
                 bol.setIdViaje(rs.getInt("idViaje"));
+            }
+        }catch (SQLException ex)
+        {
+            ex.getStackTrace();
+        }
+    }
+    public void insertarPasajero(Pasajero b){
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "insert into scAutobuses.pasajero values ("+b.getNombre()+","+b.getApellido1()+","+b.getApellido2()+","+b.getEdad()+","+b.getStatus()+");";
+        Pasajero bol = null;
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+            bol = new Pasajero();
+            if (rs.next()){
+                bol.setNombre(rs.getString("nombre"));
+                bol.setApellido1(rs.getString("apellidopaterno"));
+                bol.setApellido2(rs.getString("apellidomaterno"));
+                bol.setEdad(rs.getInt("edad"));
+                bol.setStatus(rs.getString("status"));
             }
         }catch (SQLException ex)
         {

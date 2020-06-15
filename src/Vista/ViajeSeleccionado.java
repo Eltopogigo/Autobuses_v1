@@ -27,10 +27,11 @@ public class ViajeSeleccionado extends JFrame{
     private JLabel lApellidoP;
     private JLabel lApellidoM;
     private JLabel lAsientosDisp;
-    private JLabel lTipo;
+    private JLabel edad;
+    private JLabel lTipo, total;
     private JTextField txtNombre;
     private JTextField txtApellidoP;
-    private JTextField txtApellidoM;
+    private JTextField txtApellidoM, edadTxt;
     private JRadioButton adulto;
     private JRadioButton niño;
     private JRadioButton inapam,estudiante;
@@ -41,6 +42,7 @@ public class ViajeSeleccionado extends JFrame{
     ArrayList<Integer> asientosOc;
     ImageIcon imAsientoNo;
     Icon icAsientoNo;
+    int indiceAsiento;
 
     public ViajeSeleccionado(int asientosT, ArrayList<Integer> asientosOcupados){
         setBounds(100, 100, 500, 550);//Dimensiones del frame
@@ -92,8 +94,17 @@ public class ViajeSeleccionado extends JFrame{
         add(txtApellidoM);
         txtApellidoM.setBounds(280, 70, 100, 20);
         txtApellidoM.setFont(fuente);
-        
-        
+
+        edad = new JLabel("Edad");
+        add(edad);
+        edad.setBounds(400, 50, 100, 20);
+        edad.setFont(fuente);
+
+        edadTxt = new JTextField("");
+        add(edadTxt);
+        edadTxt.setBounds(400, 70, 80, 20);
+        edadTxt.setFont(fuente);
+
         lTipo = new JLabel("Tipo de Boleto");
         add(lTipo);
         lTipo.setBounds(20, 120, 90, 20);
@@ -116,6 +127,11 @@ public class ViajeSeleccionado extends JFrame{
         agregar = new JButton("Agregar");
         add(agregar);
         agregar.setBounds(170, 450, 150, 30);
+
+        total = new JLabel("Total:  ");
+        add(total);
+        total.setBounds(10, 450, 100, 20);
+        total.setFont(fuente);
         
         JPanel panelTipo = new JPanel(new GridLayout(0, 1));
         panelTipo.add(adulto);
@@ -174,32 +190,148 @@ public class ViajeSeleccionado extends JFrame{
         comprar = new JButton("Confirmar Compra");
         add(comprar);
         comprar.setBounds(170, 450, 150, 30);
-        
-       comprar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if(JOptionPane.showConfirmDialog(null,"Confirmar Venta","Confirmación",JOptionPane.OK_OPTION)==0){
 
-                    }
-                } catch (Throwable ex) {
-                    Logger.getLogger(ViajeSeleccionado.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
     }
-    
     public void conectarComprar(ActionListener ac){
        comprar.addActionListener(ac);
      }
     
-     
+     public void conectarAgregar(ActionListener ac){
+        agregar.addActionListener(ac);
+     }
+
+    public void setTxtNombre(JTextField txtNombre) {
+        this.txtNombre = txtNombre;
+    }
+
+    public void setTxtApellidoP(JTextField txtApellidoP) {
+        this.txtApellidoP = txtApellidoP;
+    }
+
+    public void setTxtApellidoM(JTextField txtApellidoM) {
+        this.txtApellidoM = txtApellidoM;
+    }
+
+    public void setEdadTxt(JTextField edadTxt) {
+        this.edadTxt = edadTxt;
+    }
+
+    public void setAdulto(JRadioButton adulto) {
+        this.adulto = adulto;
+    }
+
+    public void setNiño(JRadioButton niño) {
+        this.niño = niño;
+    }
+
+    public void setInapam(JRadioButton inapam) {
+        this.inapam = inapam;
+    }
+
+    public void setEstudiante(JRadioButton estudiante) {
+        this.estudiante = estudiante;
+    }
+
+    public void setGrupoTipo(ButtonGroup grupoTipo) {
+        this.grupoTipo = grupoTipo;
+    }
+
+    public void setComprar(JButton comprar) {
+        this.comprar = comprar;
+    }
+
+    public void setAgregar(JButton agregar) {
+        this.agregar = agregar;
+    }
+
+    public JLabel getTotal() {
+        return total;
+    }
+
+    public void setTotal(JLabel total) {
+        this.total = total;
+    }
+
+    public JTextField getTxtNombre() {
+        return txtNombre;
+    }
+
+    public JTextField getTxtApellidoP() {
+        return txtApellidoP;
+    }
+
+    public JTextField getTxtApellidoM() {
+        return txtApellidoM;
+    }
+
+    public JTextField getEdadTxt() {
+        return edadTxt;
+    }
+
+    public JRadioButton getAdulto() {
+        return adulto;
+    }
+
+    public JRadioButton getNiño() {
+        return niño;
+    }
+
+    public JRadioButton getInapam() {
+        return inapam;
+    }
+
+    public JRadioButton getEstudiante() {
+        return estudiante;
+    }
+
+    public ButtonGroup getGrupoTipo() {
+        return grupoTipo;
+    }
+
+    public JButton getComprar() {
+        return comprar;
+    }
+
+    public JButton getAgregar() {
+        return agregar;
+    }
+
+    public int getIndiceAsiento() {
+        return indiceAsiento;
+    }
+
+    public String seleccionRadioButton(){
+        if(niño.isSelected()){
+            return "Edad menor a 12";
+        }else if(adulto.isSelected()){
+            return "Normal";
+        }else if(inapam.isSelected()){
+            return "Adulto Mayor";
+        }else if(estudiante.isSelected()){
+            return "Estudiante";
+        }else{ return null;}
+    }
+
+    public double calculoPrecio(String status){
+        double desc=0;
+        double precio=500;
+        switch(status){
+            case "Edad menor a 12": desc=0.45;
+            break;
+            case "Normal": desc=1;
+            break;
+            case "Estudiante": desc= 0.25;
+            break;
+            case "Adulto Mayor": desc=0.30;
+            break;
+        }
+        return precio= precio * desc;
+    }
     private class selecionAsientos implements MouseListener{
         @Override
         public void mouseClicked(MouseEvent e) {
             JLabel bo = (JLabel)e.getSource();
             if(bo.getIcon().equals(icAsientoNo)){
-
             }else {
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     for (int nb = 0; nb < asientos.length; nb++) {
@@ -212,6 +344,9 @@ public class ViajeSeleccionado extends JFrame{
                         ImageIcon imAsiento = new ImageIcon("src/Imagenes/AsientoSel.png");
                         Icon icAsiento = new ImageIcon(imAsiento.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
                         bo.setIcon(icAsiento);
+                        if(bo.equals(asientos[nb])){
+                            indiceAsiento=nb;
+                        }
                     }
                 }
             }

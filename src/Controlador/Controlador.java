@@ -11,7 +11,10 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +35,6 @@ public class Controlador {
     ViajeSeleccionado vb;
     VistaVentas vemp;
 
-
     public Controlador(VistaPrincipal vp, Conexion conexion) {
         this.vp = vp;
         c = conexion;
@@ -42,10 +44,8 @@ public class Controlador {
         MonitoreoViajes btnMonViajes = new MonitoreoViajes();
         vp.conectarControladorMonitoreoViajes(btnMonViajes);
         Ventas ven= new Ventas();
-        vp.conectarControladorVenta(ven);
+        vp.conectarControladorVentas(ven);
     }
-
-
     class Buscar implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -60,7 +60,6 @@ public class Controlador {
             cv.setT(tabla);
         }
     }
-
     class BuscarViajes implements ActionListener {
 
         @Override
@@ -80,15 +79,40 @@ public class Controlador {
             vemp.dispose();
         }
     }
-    class Ventas implements ActionListener{
+    class Ventas implements ActionListener, MouseListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
             vemp = new VistaVentas();
             vemp.conectarControladorVolver(new VolverPrincipal());
+            cargarTablaVenta();
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
         }
     }
-
     class AgregarPasajero implements ActionListener{
         ArrayList<Pasajero> pas=null;
         ArrayList<Boleto> boletos=null;
@@ -153,6 +177,13 @@ public class Controlador {
                         Pasajero p = pasajeros.get(i);
                         c.insertarBoleto(boletos.get(i));
                         Boleto b = boletos.get(i);
+                        //Fecha Actual
+                        Date fecha= new Date();
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+                        String strDate= formatter.format(fecha);
+                        Venta venta= new Venta(strDate,vemp.formaPago(),b.getPrecio(),vemp.randomEmpleado(),p.getIdPasajero());
+                        c.insertarVenta(venta);
+                        //...
                         String aux = "" + p.getNombre() + p.getApellido1();
                         Viaje v = new Viaje();
                         v.setIdViaje(b.getIdViaje());
@@ -190,7 +221,6 @@ public class Controlador {
         }
 
     }
-
     class CerrarBoletos implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -205,7 +235,6 @@ public class Controlador {
 
         }
     }
-
     class MonitoreoViajes implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -219,7 +248,6 @@ public class Controlador {
             mon.conectarControladorVolver(vol);
         }
     }
-
     class MonBuscar implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -227,7 +255,6 @@ public class Controlador {
             mon.central.updateUI();
         }
     }
-
     class VolverResultadosBusqueda implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -235,7 +262,6 @@ public class Controlador {
 
         }
     }
-
     class VolverBusqueda implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -256,7 +282,6 @@ public class Controlador {
         public Viaje getViaje() {
             return viaje;
         }
-
         @Override
         public void mouseClicked(MouseEvent e) {
             //Recoger qué fila se ha pulsadao en la tabla
@@ -274,22 +299,18 @@ public class Controlador {
                 System.out.println(c2.toString());
             }
         }
-
         @Override
         public void mousePressed(MouseEvent e) {
 
         }
-
         @Override
         public void mouseReleased(MouseEvent e) {
 
         }
-
         @Override
         public void mouseEntered(MouseEvent e) {
 
         }
-
         @Override
         public void mouseExited(MouseEvent e) {
 
@@ -299,11 +320,9 @@ public class Controlador {
     public void cargarDestinoYOrigen() {
         busqueda.OrigenYDestino(c.consultaTerminal());
     }
-
     public void cargarEstados() {
         mon.estados(c.consultaEstados());
     }
-
     protected void cargarTabla() {
         Vector<Object> fila;
         //Limpiar los datos de la tabla
@@ -324,7 +343,25 @@ public class Controlador {
             this.ve.dtm.addRow(fila);
         }
     }
-
+    protected void cargarTablaVenta(){
+        Vector<Object> fila;
+        //Limpiar los datos de la tabla
+        for (int i = this.vemp.dtm.getRowCount(); i > 0; i--) {
+            this.vemp.dtm.removeRow(i - 1);
+        }
+        // Listado de los clientes que retornó el modelo
+        ArrayList<Venta> ventas = c.listVentas();
+        for (Venta c : ventas) {
+            //Añadir registro a registro en el vector
+            fila = new Vector<Object>();
+            fila.add(c.getIdVenta());
+            fila.add(c.getFechaVenta());
+            fila.add(c.getFormaPago());
+            fila.add(c.getMonto());
+            //Añadir el vector a la tabla de la clase View
+            this.vemp.dtm.addRow(fila);
+        }
+    }
     public JLabel datosanim(){
         int terminal=c.idTerminal(mon.getDestino());
         JLabel datos= new JLabel();

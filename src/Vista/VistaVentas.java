@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 
 /**
  * @author danir
@@ -22,7 +23,6 @@ public class VistaVentas extends JFrame {
     private JPanel pp;
     private JButton elegir;
     private JButton volver;
-
     public VistaVentas() {
 
         setBounds(150, 80, 1000, 600);//Dimensiones del frame
@@ -42,7 +42,7 @@ public class VistaVentas extends JFrame {
 
 
         scroll = new JScrollPane();
-        cabecera = new String[]{"ID Venta", "Fecha Venta", "Forma de Pago", "Monto Total"};
+        cabecera = new String[]{"ID Venta", "Fecha Venta", "Forma de Pago", "Monto"};
         dtm = new DefaultTableModel(datos, cabecera);
         tabla = new JTable(dtm);
         scroll.setViewportView(tabla);
@@ -81,14 +81,6 @@ public class VistaVentas extends JFrame {
         header.add(iconopr);
         sp.putConstraint(SpringLayout.NORTH, iconopr, 0, SpringLayout.NORTH, header);
         sp.putConstraint(SpringLayout.WEST, iconopr, 1, SpringLayout.WEST, header);
-        
-        /*elegir =new JButton("Ventas");
-        contenedor.add(elegir);
-        elegir.setBackground(Color.BLACK);
-        elegir.setForeground(Color.pink);
-        sp.putConstraint(SpringLayout.NORTH, elegir, 490, SpringLayout.NORTH, contenedor);
-        sp.putConstraint(SpringLayout.WEST,elegir,  150, SpringLayout.WEST, contenedor);*/
-
 
         volver = new JButton("Volver");
         contenedor.add(volver);
@@ -98,6 +90,45 @@ public class VistaVentas extends JFrame {
         sp.putConstraint(SpringLayout.WEST, volver, 350, SpringLayout.WEST, contenedor);
 
         this.setVisible(true);
+    }
+    public String formaPago(){
+        String pago="";
+        int rnd=(int)(Math.random()*3+1);
+        switch (rnd){
+            case 1: pago="Efectivo";
+            break;
+            case 2: pago="Tarjeta Credito";
+            break;
+            case 3: pago="Tarjeta Debito";
+            break;
+        }
+        return pago;
+    }
+    public int randomEmpleado(){
+        int empleado=0;
+        int rnd=(int)(Math.random()*8+1);
+        switch (rnd){
+            case 1: empleado=606;
+                break;
+            case 2: empleado=632;
+                break;
+            case 3: empleado=651;
+                break;
+            case 4: empleado=691;
+                break;
+            case 5: empleado=692;
+                break;
+            case 6: empleado=705;
+                break;
+            case 7: empleado=708;
+                break;
+            case 8: empleado=711;
+                break;
+        }
+        return empleado;
+    }
+    public JTable getTabla() {
+        return tabla;
     }
     public void conectarControladorVolver(ActionListener ac){
         volver.addActionListener(ac);

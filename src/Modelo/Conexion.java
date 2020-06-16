@@ -39,21 +39,7 @@ public class Conexion {
         }
         System.out.println("Conectado a "+baseDatos);
     }
-
     //Devuelve el objeto Connection que se usará en la clase Controller
-    public Connection getConexion() {
-        return conexion;
-    }
-    public void agregaCliente(String sql) {
-
-        try {
-            PreparedStatement ps= conexion.prepareStatement(sql);
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-
-        }
-    }
     public ArrayList<String> consultaTerminal() {
         PreparedStatement ps;
         ResultSet rs;
@@ -154,6 +140,33 @@ public class Conexion {
         }
         return viajes;
     }
+    public ArrayList<Venta> listVentas() {
+
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "select * from scAutobuses.venta;";
+
+        ArrayList<Venta> venta = new ArrayList<Venta>();
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+
+            while(rs.next()){
+                Venta c = new Venta();
+                c.setIdVenta(rs.getInt("idventa"));
+                c.setFechaVenta(rs.getString("fechaventa"));
+                c.setFormaPago(rs.getString("formapago"));
+                c.setMonto(rs.getDouble("monto"));
+                c.setIdEmpleado(rs.getInt("idempleado"));
+                c.setIdPersona(rs.getInt("idpersona"));
+
+                venta.add(c);
+            }
+        } catch (SQLException e) {
+            System.err.println("* " + e);
+        }
+        return venta;
+    }
 
     public ArrayList<Terminal> consultaTerminal(int i) {
         PreparedStatement ps;
@@ -176,7 +189,6 @@ public class Conexion {
         }
         return terminal;
     }
-
     public ArrayList<String> consultaEstados() {
 
         PreparedStatement ps;
@@ -232,9 +244,7 @@ public class Conexion {
         }
         return c;
     }
-
-    public int obtenerNumAsientos(Viaje v)
-    {
+    public int obtenerNumAsientos(Viaje v) {
         PreparedStatement ps;
         ResultSet rs;
         String consultaSQL = "select numasientos from scAutobuses.autobus where  idautobus='"+v.getIdAutobus()+"';";
@@ -251,9 +261,7 @@ public class Conexion {
         }
         return numAs;
     }
-
-    public ArrayList<Integer> obtenerAsientosOc(Viaje v)
-    {
+    public ArrayList<Integer> obtenerAsientosOc(Viaje v) {
         PreparedStatement ps;
         ResultSet rs;
         String consultaSQL = "select noasiento from scAutobuses.boleto where  idboleto in (select idboleto from scAutobuses.viaje where idviaje ="+v.getIdViaje()+" );";
@@ -271,9 +279,7 @@ public class Conexion {
         }
         return asientos;
     }
-
-    public Viaje selectViaje(Viaje v)
-    {
+    public Viaje selectViaje(Viaje v) {
         PreparedStatement ps;
         ResultSet rs;
         String consultaSQL = "select * from scAutobuses.viaje where  idviaje ="+v.getIdViaje()+" ;";
@@ -298,7 +304,6 @@ public class Conexion {
         }
         return viaje;
     }
-
     public void insertarBoleto(Boleto b){
         PreparedStatement ps;
         ResultSet rs;
@@ -334,6 +339,28 @@ public class Conexion {
                 bol.setApellido2(rs.getString("apellidomaterno"));
                 bol.setEdad(rs.getInt("edad"));
                 bol.setStatus(rs.getString("status"));
+            }
+        }catch (SQLException ex)
+        {
+            ex.getStackTrace();
+        }
+    }
+    public void insertarVenta(Venta b){
+        PreparedStatement ps;
+        ResultSet rs;
+
+        String consultaSQL = "insert into scAutobuses.venta values ("+b.getFechaVenta()+","+b.getFormaPago()+","+b.getMonto()+","+b.getIdEmpleado()+","+b.getIdPersona()+");";
+        Venta venta = null;
+        try {
+            ps  = conexion.prepareStatement(consultaSQL);
+            rs  = ps.executeQuery();
+            venta = new Venta();
+            if (rs.next()){
+                venta.setFechaVenta(rs.getString("fechaventa"));
+                venta.setFormaPago(rs.getString("formapago"));
+                venta.setMonto(rs.getDouble("monto"));
+                venta.setIdEmpleado(rs.getInt("idempleado"));
+                venta.setIdPersona(rs.getInt("idpersona"));
             }
         }catch (SQLException ex)
         {

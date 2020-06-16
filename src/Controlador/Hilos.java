@@ -4,15 +4,14 @@ import java.awt.Image;
 import javax.swing.*;
 
 /**
- *
- * @author antonio
+    En esta clase implementamos los hilos para el uso en la ventana de monitoreo de los viajes
  */
 public class Hilos implements Runnable {
-    JPanel panel;
+    JPanel panel; //Creacion de las variables que se utilizaran
     JLabel anim;
     Icon camion;
 
-    public Hilos(JPanel pan){
+    public Hilos(JPanel pan){ //Constructor para inicializar las variables del panel
         panel=pan;
         anim=new JLabel();
         ImageIcon logo =new ImageIcon("src/imagenes/camion.png");
@@ -21,7 +20,7 @@ public class Hilos implements Runnable {
         panel.add(anim);
     }
 
-    public void run() {
+    public void run() { //Sobreescritura del metodo run de la interfaz Runnable
         JProgressBar barra = new JProgressBar();
         int rnd = (int) (Math.random()*2000+1) +1000;
         int z=0;
@@ -30,7 +29,14 @@ public class Hilos implements Runnable {
         anim.setBounds(x,y,200,200);
         barra.setBounds(250,y,300,20);
         panel.add(barra);
-        while (x <= 700) {
+        /* 
+        Mediante un ciclo while como solo nos interesa que la animacion sea en el eje x
+        medimos la ubicacion en el frame del panel donde se correra el hilo tanto de x como y,
+        aumentamos ese valor hasta el limite del panel,y ubicamos la imagen en su valor en x y y,
+        tambien aumentamos los valores en la progress bar par tener un poco mas de informacion respecto al viaje
+        mediante el metodo sleep variamos el tiempo que duerme cada hilo quese ejecute,
+        */
+        while (x <= 700) { 
             anim.setLocation(x,y);
             barra.setValue(z);
             barra.setString(String.valueOf(z)+"%");
